@@ -1,0 +1,50 @@
+name: parent_control
+description: A new Flutter project.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.6 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  sqflite: ^2.0.3+1
+  http: ^0.13.4
+  cached_network_image: ^3.2.1
+  flutter_svg: ^1.1.1+1
+  dotted_border: ^2.0.0+2
+  pinput: ^2.2.11
+  dash: ^1.0.3
+  shared_preferences: ^2.0.15
+  rxdart: ^0.27.5
+  shimmer: ^2.0.0
+  flutter_slidable: ^2.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+
+  uses-material-design: true
+  assets:
+    - assets/onboard/
+    - assets/icons/
+  fonts:
+    - family: SFProDisplay
+      fonts:
+        - asset: assets/fonts/SFProDisplay-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/SFProDisplay-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/SFProDisplay-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/SFProDisplay-Semibold.ttf
+          weight: 600

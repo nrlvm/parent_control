@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class UsersModel {
   UsersModel({
     this.id = 0,
@@ -9,11 +11,11 @@ class UsersModel {
   int id;
   String gender;
   String name;
-  String photo;
+  File? photo;
 
   Map<String, dynamic> toJson() => {
         "name": name,
         "gender": gender,
-        "photo": photo,
+        "photo": photo == null ? null : photo!.path,
       };
 }

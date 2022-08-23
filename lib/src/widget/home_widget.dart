@@ -29,9 +29,15 @@ class HomeWidget extends StatelessWidget {
             width: 343 * w,
             child: Stack(
               children: [
-                data.photo == ''
+                data.photo?.path == ""
                     ? NoPhoto(gender: data.gender)
-                    : SvgPicture.asset('assets/icons/settings.svg'),
+                    : Image.file(
+                        data.photo!,
+                        width: 343 * w,
+                        height: 160 * h,
+                        fit: BoxFit.cover,
+                      ),
+                // :SizedBox(),
                 Positioned(
                   bottom: 16 * h,
                   left: 16 * w,
@@ -46,10 +52,10 @@ class HomeWidget extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           fontSize: 32 * h,
                           height: 38 / 32,
-                          color: AppColor.dark,
+                          color: AppColor.blue,
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       SvgPicture.asset(
                         'assets/icons/settings.svg',
                         color: AppColor.dark,

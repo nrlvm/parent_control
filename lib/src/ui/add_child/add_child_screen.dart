@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:parent_control/src/colors/app_color.dart';
 import 'package:parent_control/src/database/database_helper.dart';
 import 'package:parent_control/src/model/database/users_model.dart';
@@ -19,6 +23,12 @@ class _AddChildScreenState extends State<AddChildScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Color k;
+    if (selectedGender != '' && _controller.text.isNotEmpty) {
+      k = AppColor.blue;
+    } else {
+      k = AppColor.grey;
+    }
     double h = Utils.height(context);
     double w = Utils.width(context);
     return Scaffold(
@@ -54,10 +64,23 @@ class _AddChildScreenState extends State<AddChildScreen> {
                 SizedBox(
                   height: 40 * h,
                 ),
-                Center(
-                  child: SvgPicture.asset(
-                    'assets/icons/photo.svg',
-                  ),
+                GestureDetector(
+                  onTap: () {
+                    pickImage();
+                    setState(() {});
+                  },
+                  child: image == null
+                      ? Center(
+                          child: SvgPicture.asset(
+                            'assets/icons/photo.svg',
+                          ),
+                        )
+                      : Image.file(
+                          image!,
+                          height: 128 * h,
+                          width: 128 * h,
+                          fit: BoxFit.cover,
+                        ),
                 ),
                 SizedBox(
                   height: 48 * h,
@@ -169,15 +192,16 @@ class _AddChildScreenState extends State<AddChildScreen> {
                         color: AppColor.dark,
                       ),
                       decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Name',
-                          hintStyle: TextStyle(
-                            fontFamily: AppColor.fontFamily,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16 * h,
-                            height: 19 / 16,
-                            color: AppColor.dark.withOpacity(0.3),
-                          )),
+                        border: InputBorder.none,
+                        hintText: 'Name',
+                        hintStyle: TextStyle(
+                          fontFamily: AppColor.fontFamily,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16 * h,
+                          height: 19 / 16,
+                          color: AppColor.dark.withOpacity(0.3),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -190,7 +214,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                       UsersModel(
                         name: _controller.text,
                         gender: selectedGender,
-                        photo: '',
+                        photo: image!,
                       ),
                     );
                     Navigator.pushReplacement(
@@ -199,7 +223,6 @@ class _AddChildScreenState extends State<AddChildScreen> {
                         builder: (context) => const HomeScreen(),
                       ),
                     );
-                    // DatabaseHelper().clear();
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
@@ -207,7 +230,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 40 * w),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(32),
-                      color: AppColor.dWhite,
+                      color: k,
                     ),
                     child: Center(
                       child: Text(
@@ -217,7 +240,9 @@ class _AddChildScreenState extends State<AddChildScreen> {
                           fontWeight: FontWeight.w500,
                           fontSize: 18 * h,
                           height: 21 / 18,
-                          color: AppColor.dark.withOpacity(0.3),
+                          color: k == AppColor.grey
+                              ? AppColor.dark.withOpacity(0.3)
+                              : AppColor.white,
                         ),
                       ),
                     ),
@@ -232,5 +257,20 @@ class _AddChildScreenState extends State<AddChildScreen> {
         ],
       ),
     );
+  }
+
+  File? image;
+
+  Future pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+      final imageTemp = File(image.path);
+      setState(() {
+        this.image = imageTemp;
+      });
+    } on PlatformException catch (e) {
+      print('Failed to pick img $e');
+    }
   }
 }

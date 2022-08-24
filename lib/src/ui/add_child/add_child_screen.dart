@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:parent_control/src/bloc/users_bloc.dart';
 import 'package:parent_control/src/colors/app_color.dart';
-import 'package:parent_control/src/database/database_helper.dart';
 import 'package:parent_control/src/model/database/users_model.dart';
 import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/utils/utils.dart';
@@ -212,7 +212,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    dataBaseBlock.allSaveUser(
+                    usersBloc.allSaveUser(
                       UsersModel(
                         name: _controller.text,
                         gender: selectedGender,

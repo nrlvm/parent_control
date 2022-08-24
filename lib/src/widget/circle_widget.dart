@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:parent_control/src/colors/app_color.dart';
 import 'package:parent_control/src/utils/utils.dart';
 
 class CircleWidget extends StatelessWidget {
@@ -19,7 +18,7 @@ class CircleWidget extends StatelessWidget {
       child: ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           return Center(
             child: Container(

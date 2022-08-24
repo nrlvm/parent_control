@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:parent_control/src/database/database_helper.dart';
+import 'package:parent_control/src/bloc/users_bloc.dart';
 import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/ui/onboarding/onboard_all.dart';
 
@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _splashToOnboarding() async {
-    bool user = await dataBaseBlock.isUser();
+    bool user = await usersBloc.isUser();
     timer = Timer(
       const Duration(seconds: 2),
       () {

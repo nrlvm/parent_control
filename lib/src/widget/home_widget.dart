@@ -32,7 +32,10 @@ class HomeWidget extends StatelessWidget {
             child: Stack(
               children: [
                 data.photo == ""
-                    ? NoPhoto(gender: data.gender)
+                    ? NoPhoto(
+                        gender: data.gender,
+                        main: true,
+                      )
                     : Image.file(
                         File(data.photo),
                         width: 343 * w,

@@ -28,7 +28,7 @@ class _AlertScreenState extends State<AlertScreen> {
         actions: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: usersModel.photo == ""
+            child: usersModel.photo != ""
                 ? Image.file(
                     File(usersModel.photo),
                     height: 48 * h,
@@ -37,6 +37,7 @@ class _AlertScreenState extends State<AlertScreen> {
                   )
                 : NoPhoto(
                     gender: usersModel.gender,
+                    main: false,
                   ),
           ),
           SizedBox(

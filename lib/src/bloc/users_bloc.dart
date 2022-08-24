@@ -2,7 +2,7 @@ import 'package:parent_control/src/database/database_helper.dart';
 import 'package:parent_control/src/model/database/users_model.dart';
 import 'package:rxdart/subjects.dart';
 
-class DataBaseBlock {
+class UsersBloc {
   final DatabaseHelper dbh = DatabaseHelper();
 
   final _fetchUser = PublishSubject<List<UsersModel>>();
@@ -38,3 +38,6 @@ class DataBaseBlock {
     allUser();
   }
 }
+
+final usersBloc = UsersBloc();
+

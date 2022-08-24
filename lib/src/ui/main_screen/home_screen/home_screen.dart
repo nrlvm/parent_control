@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:parent_control/src/bloc/users_bloc.dart';
 import 'package:parent_control/src/colors/app_color.dart';
-import 'package:parent_control/src/database/database_helper.dart';
 import 'package:parent_control/src/model/database/users_model.dart';
 import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/utils/utils.dart';
@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    dataBaseBlock.allUser();
+    usersBloc.allUser();
     pageController.addListener(() {
       setState(() {
         currentPage = pageController.page!.toInt();
@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: AppColor.blue,
       body: StreamBuilder<List<UsersModel>>(
-        stream: dataBaseBlock.getUser,
+        stream: usersBloc.getUser,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<UsersModel> data = snapshot.data!;

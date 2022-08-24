@@ -1,7 +1,6 @@
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 import 'dart:async';
-import 'package:parent_control/src/block/database/database_block.dart';
 import 'package:parent_control/src/model/database/users_model.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -92,5 +91,3 @@ class DatabaseHelper {
     await dbClient.rawQuery('DELETE FROM $tableName');
   }
 }
-
-final dataBaseBlock = DataBaseBlock();

@@ -45,12 +45,12 @@ class _ImagePicState extends State<ImagePic> {
             height: 50 * h,
           ),
           image == null
-              ? SizedBox()
+              ? const SizedBox()
               : Image.file(
                   image!,
                   height: 160 * h,
                   width: 160 * h,
-                  fit: BoxFit.cover ,
+                  fit: BoxFit.cover,
                 ),
         ],
       ),
@@ -68,6 +68,7 @@ class _ImagePicState extends State<ImagePic> {
         this.image = imageTemp;
       });
     } on PlatformException catch (e) {
+      // ignore: avoid_print
       print('Failed to pick img $e');
     }
   }

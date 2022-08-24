@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:parent_control/src/database/database_helper.dart';
+import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/ui/onboarding/onboard_all.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -9,10 +13,20 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  Timer? timer;
+
   @override
   void initState() {
     _splashToOnboarding();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (timer != null) {
+      timer!.cancel();
+    }
+    super.dispose();
   }
 
   @override
@@ -30,13 +44,19 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _splashToOnboarding() async {
-    await Future.delayed(const Duration(seconds: 2));
-    // ignore: use_build_context_synchronously
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const OnboardAll(),
-      ),
+    bool user = await dataBaseBlock.isUser();
+    timer = Timer(
+      const Duration(seconds: 2),
+      () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => !user
+                ? const OnboardAll()
+                : const MainScreen(),
+          ),
+        );
+      },
     );
   }
 }

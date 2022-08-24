@@ -14,6 +14,15 @@ class DataBaseBlock {
     _fetchUser.sink.add(getUsers);
   }
 
+  Future<bool> isUser() async {
+    List<UsersModel> getUsers = await dbh.getUsers();
+    if (getUsers.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   allSaveUser(UsersModel data) async {
     await dbh.saveUser(data);
     allUser();

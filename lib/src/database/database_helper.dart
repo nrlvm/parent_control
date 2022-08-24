@@ -1,6 +1,4 @@
 // ignore: depend_on_referenced_packages
-import 'dart:io';
-
 import 'package:path/path.dart';
 import 'dart:async';
 import 'package:parent_control/src/block/database/database_block.dart';
@@ -63,14 +61,9 @@ class DatabaseHelper {
         name: list[i][columnName],
         id: list[i][columnId],
         gender: list[i][columnGender],
-        photo: list[i][columnPhoto] == ""
-            ? null
-            : File(
-                list[i][columnPhoto],
-              ),
+        photo: list[i][columnPhoto],
       );
       users.add(data);
-      print(users);
     }
     return users;
   }

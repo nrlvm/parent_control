@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:parent_control/src/colors/app_color.dart';
 import 'package:parent_control/src/database/database_helper.dart';
 import 'package:parent_control/src/model/database/users_model.dart';
-import 'package:parent_control/src/ui/main_screen/home_screen/home_screen.dart';
+import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/utils/utils.dart';
 
 class AddChildScreen extends StatefulWidget {
@@ -73,6 +73,8 @@ class _AddChildScreenState extends State<AddChildScreen> {
                       ? Center(
                           child: SvgPicture.asset(
                             'assets/icons/photo.svg',
+                            height: 128 * h,
+                            width: 128 * h,
                           ),
                         )
                       : Image.file(
@@ -214,13 +216,13 @@ class _AddChildScreenState extends State<AddChildScreen> {
                       UsersModel(
                         name: _controller.text,
                         gender: selectedGender,
-                        photo: image!,
+                        photo: image == null ? "" : image!.path,
                       ),
                     );
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
+                        builder: (context) => const MainScreen(),
                       ),
                     );
                   },
@@ -270,6 +272,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
         this.image = imageTemp;
       });
     } on PlatformException catch (e) {
+      // ignore: avoid_print
       print('Failed to pick img $e');
     }
   }

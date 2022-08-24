@@ -5,7 +5,6 @@ import 'package:parent_control/src/ui/onboarding/onboarding1.dart';
 import 'package:parent_control/src/ui/onboarding/onboarding2.dart';
 import 'package:parent_control/src/ui/onboarding/onboarding3.dart';
 import 'package:parent_control/src/ui/onboarding/onboarding4.dart';
-import 'package:parent_control/src/ui/onboarding/splash_screen.dart';
 import 'package:parent_control/src/utils/utils.dart';
 
 class OnboardAll extends StatefulWidget {

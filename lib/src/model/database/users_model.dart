@@ -11,11 +11,11 @@ class UsersModel {
   int id;
   String gender;
   String name;
-  File? photo;
+  String photo;
 
   Map<String, dynamic> toJson() => {
         "name": name,
         "gender": gender,
-        "photo": photo == null ? null : photo!.path,
+        "photo": photo,
       };
 }

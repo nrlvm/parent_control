@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:parent_control/src/colors/app_color.dart';
@@ -29,10 +31,10 @@ class HomeWidget extends StatelessWidget {
             width: 343 * w,
             child: Stack(
               children: [
-                data.photo?.path == ""
+                data.photo == ""
                     ? NoPhoto(gender: data.gender)
                     : Image.file(
-                        data.photo!,
+                        File(data.photo),
                         width: 343 * w,
                         height: 160 * h,
                         fit: BoxFit.cover,
@@ -58,7 +60,7 @@ class HomeWidget extends StatelessWidget {
                       const Spacer(),
                       SvgPicture.asset(
                         'assets/icons/settings.svg',
-                        color: AppColor.dark,
+                        color: AppColor.blue,
                       ),
                     ],
                   ),

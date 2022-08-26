@@ -1,7 +1,7 @@
 // ignore: depend_on_referenced_packages
-import 'package:parent_control/src/model/database/task_model.dart';
 import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:path/path.dart';
+import 'package:parent_control/src/model/database/task_model.dart';
 import 'dart:async';
 import 'package:parent_control/src/model/database/users_model.dart';
 import 'package:sqflite/sqflite.dart';
@@ -86,14 +86,16 @@ class DatabaseHelper {
 
   ///get all task
 
-  Future<List<TaskModel>> getTasks() async {
+  Future<List<TaskModel>> getTasks(int id) async {
     var dbClient = await db;
-    List<Map> list = await dbClient.rawQuery('SELECT * FROM $tableTaskName');
+    List<Map> list = await dbClient.rawQuery(
+      'SELECT * FROM $tableTaskName WHERE $columnTaskUserId=$id',
+    );
     List<TaskModel> tasks = [];
     for (int i = 0; i < list.length; i++) {
       TaskModel data = TaskModel(
         color: list[i][columnTaskColor],
-        userId: usersModel.id,
+        userId: list[i][columnTaskUserId],
         year: list[i][columnTaskYear],
         month: list[i][columnTaskMonth],
         day: list[i][columnTaskDay],

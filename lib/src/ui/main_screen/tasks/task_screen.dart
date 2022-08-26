@@ -20,7 +20,7 @@ class TaskScreen extends StatefulWidget {
 class _TaskScreenState extends State<TaskScreen> {
   @override
   void initState() {
-    taskBloc.allTask();
+    taskBloc.allTask(usersModel.id);
     super.initState();
   }
 
@@ -81,6 +81,7 @@ class _TaskScreenState extends State<TaskScreen> {
                           itemBuilder: (context, index) {
                             return TaskWidget(data: data[index]);
                           },
+                          itemCount: data.length,
                         );
                       }
                       return const Text('error');

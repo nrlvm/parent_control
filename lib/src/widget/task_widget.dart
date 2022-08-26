@@ -28,10 +28,13 @@ class TaskWidget extends StatelessWidget {
     return Container(
       height: 56 * h,
       width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.symmetric(horizontal: 16 * w),
+      margin: EdgeInsets.only(left: 16 * w, right: 16 * w, top: 8 * h),
+      padding: EdgeInsets.symmetric(horizontal: 16 * w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         color: colors[data.color],
+        border:
+            data.color == 0 ? Border.all(color: AppColor.grey) : null,
       ),
       child: Row(
         children: [

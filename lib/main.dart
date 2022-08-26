@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:parent_control/src/ui/onboarding/splash_screen.dart';
-import 'package:parent_control/src/widget/select_color_widget.dart';
 
 void main() {
   runApp(const MyApp());

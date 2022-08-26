@@ -77,11 +77,14 @@ class _AddChildScreenState extends State<AddChildScreen> {
                             width: 128 * h,
                           ),
                         )
-                      : Image.file(
-                          image!,
-                          height: 128 * h,
-                          width: 128 * h,
-                          fit: BoxFit.cover,
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.file(
+                            image!,
+                            height: 128 * h,
+                            width: 128 * h,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                 ),
                 SizedBox(

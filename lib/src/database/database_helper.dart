@@ -1,5 +1,6 @@
 // ignore: depend_on_referenced_packages
 import 'package:parent_control/src/model/database/task_model.dart';
+import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:path/path.dart';
 import 'dart:async';
 import 'package:parent_control/src/model/database/users_model.dart';
@@ -11,21 +12,21 @@ class DatabaseHelper {
   factory DatabaseHelper() => _instance;
 
   final String tableUserName = 'userTable';
-  final String columnId = 'id';
-  final String columnName = 'name';
-  final String columnGender = 'gender';
-  final String columnPhoto = 'photo';
+  final String columnUserId = 'id';
+  final String columnUserName = 'name';
+  final String columnUserGender = 'gender';
+  final String columnUserPhoto = 'photo';
 
   final String tableTaskName = 'taskTable';
   final String columnTaskId = 'task_id';
   final String columnTaskYear = 'year';
-  final String cMonth2 = 'month';
-  final String cDay2 = 'day';
-  final String cStart2 = 'start';
-  final String cEnd2 = 'end';
-  final String cColor2 = 'color';
-  final String cTitle2 = 'title';
-  final String cUserId2 = 'user_id';
+  final String columnTaskMonth = 'month';
+  final String columnTaskDay = 'day';
+  final String columnTaskStart = 'start';
+  final String columnTaskEnd = 'end';
+  final String columnTaskColor = 'color';
+  final String columnTaskTitle = 'title';
+  final String columnTaskUserId = 'user_id';
 
   static Database? _db;
 
@@ -50,22 +51,22 @@ class DatabaseHelper {
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
       'CREATE TABLE $tableUserName('
-      '$columnId INTEGER PRIMARY KEY AUTOINCREMENT, '
-      '$columnName TEXT, '
-      '$columnGender INTEGER,'
-      '$columnPhoto TEXT)',
+      '$columnUserId INTEGER PRIMARY KEY AUTOINCREMENT, '
+      '$columnUserName TEXT, '
+      '$columnUserGender INTEGER,'
+      '$columnUserPhoto TEXT)',
     );
     await db.execute(
       'CREATE TABLE $tableTaskName('
       '$columnTaskId INTEGER PRIMARY KEY AUTOINCREMENT, '
       '$columnTaskYear INTEGER, '
-      '$cMonth2 INTEGER, '
-      '$cDay2 INTEGER, '
-      '$cStart2 INTEGER, '
-      '$cEnd2 INTEGER, '
-      '$cColor2 INTEGER, '
-      '$cTitle2 TEXT, '
-      '$cUserId2 INTEGER)',
+      '$columnTaskMonth INTEGER, '
+      '$columnTaskDay INTEGER, '
+      '$columnTaskStart INTEGER, '
+      '$columnTaskEnd INTEGER, '
+      '$columnTaskColor INTEGER, '
+      '$columnTaskTitle TEXT, '
+      '$columnTaskUserId INTEGER)',
     );
   }
 
@@ -83,6 +84,28 @@ class DatabaseHelper {
     return result;
   }
 
+  ///get all task
+
+  Future<List<TaskModel>> getTasks() async {
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery('SELECT * FROM $tableTaskName');
+    List<TaskModel> tasks = [];
+    for (int i = 0; i < list.length; i++) {
+      TaskModel data = TaskModel(
+        color: list[i][columnTaskColor],
+        userId: usersModel.id,
+        year: list[i][columnTaskYear],
+        month: list[i][columnTaskMonth],
+        day: list[i][columnTaskDay],
+        start: list[i][columnTaskStart],
+        end: list[i][columnTaskEnd],
+        title: list[i][columnTaskTitle],
+      );
+      tasks.add(data);
+    }
+    return tasks;
+  }
+
   /// get all user
   Future<List<UsersModel>> getUsers() async {
     var dbClient = await db;
@@ -90,10 +113,10 @@ class DatabaseHelper {
     List<UsersModel> users = [];
     for (int i = 0; i < list.length; i++) {
       UsersModel data = UsersModel(
-        name: list[i][columnName],
-        id: list[i][columnId],
-        gender: list[i][columnGender],
-        photo: list[i][columnPhoto],
+        name: list[i][columnUserName],
+        id: list[i][columnUserId],
+        gender: list[i][columnUserGender],
+        photo: list[i][columnUserPhoto],
       );
       users.add(data);
     }
@@ -105,7 +128,7 @@ class DatabaseHelper {
     return await dbClient.update(
       tableUserName,
       data.toJson(),
-      where: "$columnId = ?",
+      where: "$columnUserId = ?",
       whereArgs: [data.id],
     );
   }
@@ -114,7 +137,7 @@ class DatabaseHelper {
     var dbClient = await db;
     return await dbClient.delete(
       tableUserName,
-      where: '$columnId = ?',
+      where: '$columnUserId = ?',
       whereArgs: [id],
     );
   }

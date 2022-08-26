@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:parent_control/src/bloc/tasks_bloc.dart';
 import 'package:parent_control/src/colors/app_color.dart';
+import 'package:parent_control/src/model/database/task_model.dart';
 import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/ui/main_screen/tasks/add_task.dart';
 import 'package:parent_control/src/utils/utils.dart';
 import 'package:parent_control/src/widget/no_photo_widget.dart';
+import 'package:parent_control/src/widget/task_widget.dart';
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({Key? key}) : super(key: key);
@@ -15,6 +18,12 @@ class TaskScreen extends StatefulWidget {
 }
 
 class _TaskScreenState extends State<TaskScreen> {
+  @override
+  void initState() {
+    taskBloc.allTask();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double h = Utils.height(context);
@@ -31,15 +40,15 @@ class _TaskScreenState extends State<TaskScreen> {
             borderRadius: BorderRadius.circular(12),
             child: usersModel.photo != ""
                 ? Image.file(
-              File(usersModel.photo),
-              height: 48 * h,
-              width: 48 * h,
-              fit: BoxFit.cover,
-            )
+                    File(usersModel.photo),
+                    height: 48 * h,
+                    width: 48 * h,
+                    fit: BoxFit.cover,
+                  )
                 : NoPhoto(
-              gender: usersModel.gender,
-              main: false,
-            ),
+                    gender: usersModel.gender,
+                    main: false,
+                  ),
           ),
           SizedBox(
             width: 16 * w,
@@ -63,6 +72,20 @@ class _TaskScreenState extends State<TaskScreen> {
               children: [
                 SizedBox(
                   height: 504 * h,
+                  child: StreamBuilder<List<TaskModel>>(
+                    stream: taskBloc.getTasks,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<TaskModel> data = snapshot.data!;
+                        return ListView.builder(
+                          itemBuilder: (context, index) {
+                            return TaskWidget(data: data[index]);
+                          },
+                        );
+                      }
+                      return const Text('error');
+                    },
+                  ),
                 ),
                 GestureDetector(
                   onTap: () {
@@ -94,7 +117,7 @@ class _TaskScreenState extends State<TaskScreen> {
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),

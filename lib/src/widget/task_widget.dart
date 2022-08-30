@@ -6,8 +6,10 @@ import 'package:parent_control/src/utils/utils.dart';
 
 class TaskWidget extends StatelessWidget {
   final TaskModel data;
+  final Function() onTap;
 
-  const TaskWidget({Key? key, required this.data}) : super(key: key);
+  const TaskWidget({Key? key, required this.data, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,48 +27,52 @@ class TaskWidget extends StatelessWidget {
     ];
     double h = Utils.height(context);
     double w = Utils.width(context);
-    return Container(
-      height: 56 * h,
-      width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.only(left: 16 * w, right: 16 * w, top: 8 * h),
-      padding: EdgeInsets.symmetric(horizontal: 16 * w),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: colors[data.color],
-        border:
-            data.color == 0 ? Border.all(color: AppColor.grey) : null,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              data.title,
+    return GestureDetector(
+      onTap: () {
+        onTap();
+      },
+      child: Container(
+        height: 56 * h,
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.only(left: 16 * w, right: 16 * w, top: 8 * h),
+        padding: EdgeInsets.symmetric(horizontal: 16 * w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: data.color != -1 ? colors[data.color] :colors[0],
+          border: data.color == 0 ? Border.all(color: AppColor.grey) : null,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                data.title,
+                style: TextStyle(
+                  fontFamily: AppColor.fontFamily,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16 * h,
+                  height: 19 / 16,
+                  color: AppColor.dark,
+                ),
+              ),
+            ),
+            Text(
+              '${data.start} - ${data.end}',
               style: TextStyle(
                 fontFamily: AppColor.fontFamily,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w400,
                 fontSize: 16 * h,
                 height: 19 / 16,
                 color: AppColor.dark,
               ),
             ),
-          ),
-          Text(
-            '${data.start} - ${data.end}',
-            style: TextStyle(
-              fontFamily: AppColor.fontFamily,
-              fontWeight: FontWeight.w400,
-              fontSize: 16 * h,
-              height: 19 / 16,
-              color: AppColor.dark,
+            SizedBox(
+              width: 6 * w,
             ),
-          ),
-          SizedBox(
-            width: 6 * w,
-          ),
-          SvgPicture.asset(
-            'assets/icons/arrow_right.svg',
-          ),
-        ],
+            SvgPicture.asset(
+              'assets/icons/arrow_right.svg',
+            ),
+          ],
+        ),
       ),
     );
   }

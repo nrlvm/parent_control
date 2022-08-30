@@ -11,24 +11,24 @@ import 'package:parent_control/src/widget/color_picker.dart';
 import 'package:parent_control/src/widget/no_photo_widget.dart';
 import 'package:parent_control/src/widget/number_picker.dart';
 
-class AddTaskScreen extends StatefulWidget {
+class EditTaskScreen extends StatefulWidget {
+  final TaskModel data;
   final DateTime dateTime;
 
-  const AddTaskScreen({
+  const EditTaskScreen({
     Key? key,
+    required this.data,
     required this.dateTime,
   }) : super(key: key);
 
   @override
-  State<AddTaskScreen> createState() => _AddTaskScreenState();
+  State<EditTaskScreen> createState() => _EditTaskScreenState();
 }
 
-class _AddTaskScreenState extends State<AddTaskScreen> {
+class _EditTaskScreenState extends State<EditTaskScreen> {
   TextEditingController controller = TextEditingController();
-  int startHour = DateTime.now().hour;
-  int endHour = DateTime.now().hour + 1;
 
-  int selectedIndex = 0;
+  int selectedIndex = -1;
 
   List<Color> colors = const [
     Color(0xFFFFFFFF),
@@ -42,6 +42,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     Color(0xFFA2A0FF),
     Color(0xFF6B7AFF),
   ];
+
+  @override
+  void initState() {
+    controller.text = widget.data.title;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +104,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   ),
                   Center(
                     child: Text(
-                      '${dateUtil.getToString(widget.dateTime.month)} ${widget.dateTime.day}, ${widget.dateTime.year}',
+                      '${dateUtil.getToString(widget.data.month)} ${widget.data.day}, ${widget.data.year}',
                       style: TextStyle(
                         fontFamily: AppColor.fontFamily,
                         fontWeight: FontWeight.w400,
@@ -129,16 +135,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           height: 19 / 16,
                           color: AppColor.dark,
                         ),
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'Title Name',
-                          hintStyle: TextStyle(
-                            fontFamily: AppColor.fontFamily,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16 * h,
-                            height: 19 / 16,
-                            color: AppColor.dark.withOpacity(0.3),
-                          ),
                         ),
                       ),
                     ),
@@ -152,13 +150,15 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         context: context,
                         builder: (context) {
                           return NumberPickerDialog(
-                            start: startHour,
-                            end: endHour,
+                            start: widget.data.start,
+                            end: widget.data.end,
                             change: (int start, int end) {
-                              setState(() {
-                                startHour = start;
-                                endHour = end;
-                              });
+                              setState(
+                                () {
+                                  widget.data.start = start;
+                                  widget.data.end = end;
+                                },
+                              );
                             },
                           );
                         },
@@ -186,7 +186,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 width: 8 * w,
                               ),
                               Text(
-                                startHour.toString(),
+                                widget.data.start.toString(),
                                 style: TextStyle(
                                   fontFamily: AppColor.fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -220,7 +220,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 width: 8 * w,
                               ),
                               Text(
-                                endHour.toString(),
+                                widget.data.end.toString(),
                                 style: TextStyle(
                                   fontFamily: AppColor.fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -245,11 +245,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       showModalBottomSheet(
                         context: context,
                         builder: (context) => ColorPicker(
-                          selectedIndex: selectedIndex,
+                          selectedIndex: widget.data.color,
                           change: (int index) {
                             setState(
                               () {
-                                selectedIndex = index;
+                                widget.data.color = index;
                               },
                             );
                           },
@@ -274,9 +274,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(4),
                               // ignore: unrelated_type_equality_checks
-                              color: selectedIndex == -1
-                                  ? AppColor.grey
-                                  : colors[selectedIndex],
+                              color: colors[widget.data.color],
                               border: selectedIndex == 0
                                   ? Border.all(
                                       color: AppColor.grey,
@@ -288,7 +286,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             width: 16 * w,
                           ),
                           Text(
-                            selectedIndex == -1 ? 'Default color' : 'Color',
+                            widget.data.color == -1 ? 'Default color' : 'Color',
                             style: TextStyle(
                               fontFamily: AppColor.fontFamily,
                               fontWeight: FontWeight.w500,
@@ -308,20 +306,21 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      taskBloc.saveTask(
+                      taskBloc.updateTask(
                         TaskModel(
-                          color: selectedIndex,
-                          userId: usersModel.id,
-                          year: widget.dateTime.year,
-                          month: widget.dateTime.month,
-                          day: widget.dateTime.day,
-                          start: startHour,
-                          end: endHour,
+                          color: widget.data.color,
+                          userId: widget.data.userId,
+                          year: widget.data.year,
+                          month: widget.data.month,
+                          day: widget.data.day,
+                          start: widget.data.start,
+                          end: widget.data.end,
                           title: controller.text,
                         ),
                         widget.dateTime,
                       );
                       Navigator.pop(context);
+                      print(widget.data.toJson());
                     },
                     child: Container(
                       height: 56 * h,

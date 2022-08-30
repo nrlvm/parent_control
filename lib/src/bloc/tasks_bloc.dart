@@ -10,14 +10,24 @@ class TasksBloc {
 
   Stream<List<TaskModel>> get getTasks => _fetchTasks.stream;
 
-  allTask(int id) async {
-    List<TaskModel> getTasks = await dbh.getTasks(id);
+  allTask(int id, DateTime dateTime) async {
+    List<TaskModel> getTasks = await dbh.getTasks(id, dateTime);
     _fetchTasks.sink.add(getTasks);
   }
 
-  saveTask(TaskModel data) async {
+  saveTask(TaskModel data, DateTime dateTime) async {
     await dbh.saveTask(data);
-    allTask(usersModel.id);
+    allTask(usersModel.id, dateTime);
+  }
+
+  updateTask(TaskModel data, DateTime dateTime) async {
+    await dbh.updateTask(data);
+    allTask(usersModel.id, dateTime);
+  }
+
+  Future<List<TaskModel>> getTaskTime() async {
+    List<TaskModel> data = await dbh.getTaskTime();
+    return data;
   }
 }
 

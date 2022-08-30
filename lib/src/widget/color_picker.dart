@@ -81,10 +81,12 @@ class _ColorPickerState extends State<ColorPicker> {
                           selected: selectedIndex == index * gridCount,
                           color: colors[index * gridCount],
                           onTap: () {
-                            setState(() {
-                              selectedIndex = index * gridCount;
-                              widget.change(selectedIndex);
-                            });
+                            setState(
+                              () {
+                                selectedIndex = index * gridCount;
+                                widget.change(selectedIndex);
+                              },
+                            );
                           },
                         ),
                         index * gridCount + 1 >= colors.length

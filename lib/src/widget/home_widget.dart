@@ -3,14 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:parent_control/src/colors/app_color.dart';
+import 'package:parent_control/src/model/database/task_model.dart';
 import 'package:parent_control/src/model/database/users_model.dart';
 import 'package:parent_control/src/utils/utils.dart';
+import 'package:parent_control/src/widget/home_task_widget.dart';
 import 'package:parent_control/src/widget/no_photo_widget.dart';
 
 class HomeWidget extends StatelessWidget {
-  final UsersModel data;
+  final UsersModel userModel;
+  final List<TaskModel> taskModel;
 
-  const HomeWidget({Key? key, required this.data}) : super(key: key);
+  const HomeWidget({Key? key, required this.userModel, required this.taskModel})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,19 +29,20 @@ class HomeWidget extends StatelessWidget {
         color: AppColor.white,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             height: 160 * h,
             width: 343 * w,
             child: Stack(
               children: [
-                data.photo == ""
+                userModel.photo == ""
                     ? NoPhoto(
-                        gender: data.gender,
+                        gender: userModel.gender,
                         main: true,
                       )
                     : Image.file(
-                        File(data.photo),
+                        File(userModel.photo),
                         width: 343 * w,
                         height: 160 * h,
                         fit: BoxFit.cover,
@@ -51,7 +56,7 @@ class HomeWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        data.name,
+                        userModel.name,
                         style: TextStyle(
                           fontFamily: AppColor.fontFamily,
                           fontWeight: FontWeight.w600,
@@ -70,7 +75,15 @@ class HomeWidget extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
+          SizedBox(
+            height: 21 * h,
+          ),
+          taskModel.isNotEmpty
+              ? HomeTaskWidget(
+                  data: taskModel.first,
+                )
+              : const SizedBox(),
         ],
       ),
     );

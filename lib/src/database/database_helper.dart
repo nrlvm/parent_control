@@ -1,5 +1,4 @@
 // ignore: depend_on_referenced_packages
-import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:path/path.dart';
 import 'package:parent_control/src/model/database/task_model.dart';
 import 'dart:async';
@@ -84,12 +83,47 @@ class DatabaseHelper {
     return result;
   }
 
+  ///get task time
+
+  Future<List<TaskModel>> getTaskTime() async {
+    var dbClient = await db;
+    DateTime timeNow = DateTime.now();
+    List<Map> list = await dbClient.rawQuery('SELECT * FROM $tableTaskName '
+        'WHERE $columnTaskYear = ${timeNow.year} '
+        'AND $columnTaskMonth = ${timeNow.month} '
+        'AND $columnTaskDay = ${timeNow.day} '
+        );
+    List<TaskModel> tasks = [];
+    for (int i = 0; i < list.length; i++) {
+      if (list[i][columnTaskStart] <= timeNow.hour &&
+          timeNow.hour <= list[i][columnTaskEnd]) {
+        TaskModel data = TaskModel(
+          color: list[i][columnTaskColor],
+          userId: list[i][columnTaskUserId],
+          year: list[i][columnTaskYear],
+          month: list[i][columnTaskMonth],
+          day: list[i][columnTaskDay],
+          start: list[i][columnTaskStart],
+          end: list[i][columnTaskEnd],
+          title: list[i][columnTaskTitle],
+        );
+        tasks.add(data);
+        print(data.toJson());
+      }
+    }
+    return tasks;
+  }
+
   ///get all task
 
-  Future<List<TaskModel>> getTasks(int id) async {
+  Future<List<TaskModel>> getTasks(int id, DateTime dateTime) async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
-      'SELECT * FROM $tableTaskName WHERE $columnTaskUserId=$id',
+      'SELECT * FROM $tableTaskName WHERE '
+      '$columnTaskUserId=$id AND '
+      '$columnTaskYear=${dateTime.year} AND '
+      '$columnTaskMonth=${dateTime.month} AND '
+      '$columnTaskDay=${dateTime.day}',
     );
     List<TaskModel> tasks = [];
     for (int i = 0; i < list.length; i++) {
@@ -125,12 +159,26 @@ class DatabaseHelper {
     return users;
   }
 
+  ///update user info
   Future<int> updateUser(UsersModel data) async {
     var dbClient = await db;
     return await dbClient.update(
       tableUserName,
       data.toJson(),
       where: "$columnUserId = ?",
+      whereArgs: [data.id],
+    );
+  }
+
+  ///update task info
+  Future<int> updateTask(TaskModel data) async {
+    var dbClient = await db;
+    return await dbClient.update(
+      tableTaskName,
+      data.toJson(),
+      where: "$columnTaskId = ? AND "
+          "$columnTaskUserId = ${data.userId} AND "
+          "$columnTaskId = ${data.id} ",
       whereArgs: [data.id],
     );
   }

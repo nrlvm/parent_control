@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:parent_control/src/bloc/tasks_bloc.dart';
 import 'package:parent_control/src/bloc/users_bloc.dart';
 import 'package:parent_control/src/colors/app_color.dart';
+import 'package:parent_control/src/model/database/task_model.dart';
 import 'package:parent_control/src/model/database/users_model.dart';
 import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/utils/utils.dart';
@@ -18,16 +20,21 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController pageController = PageController();
   bool isFirst = false;
   int currentPage = 0;
-
+  List<TaskModel> taskModel = [];
   @override
-  void initState() {
+  initState() {
     usersBloc.allUser();
+    getTime();
     pageController.addListener(() {
       setState(() {
         currentPage = pageController.page!.toInt();
       });
     });
     super.initState();
+  }
+
+  getTime() async {
+    taskModel = await taskBloc.getTaskTime();
   }
 
   @override
@@ -39,9 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
         stream: usersBloc.getUser,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List<UsersModel> data = snapshot.data!;
+            List<UsersModel> userData = snapshot.data!;
             if (!isFirst) {
-              usersModel = data[0];
+              usersModel = userData[0];
               isFirst = true;
             }
             return Column(
@@ -70,14 +77,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: PageView.builder(
                     controller: pageController,
                     onPageChanged: (index) {
-                      usersModel = data[index];
+                      usersModel = userData[index];
                     },
                     itemBuilder: (context, index) {
                       return HomeWidget(
-                        data: data[index],
+                        userModel: userData[index],
+                        taskModel: taskModel
                       );
                     },
-                    itemCount: data.length,
+                    itemCount: userData.length,
                   ),
                 ),
                 SizedBox(
@@ -87,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 8 * h,
                   child: CircleWidget(
                     controlPage: currentPage,
-                    length: data.length,
+                    length: userData.length,
                   ),
                 ),
               ],

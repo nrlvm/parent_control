@@ -85,32 +85,31 @@ class DatabaseHelper {
 
   ///get task time
 
-  Future<List<TaskModel>> getTaskTime() async {
+  Future<List<TaskModel>> getTaskToday(int userId) async {
     var dbClient = await db;
     DateTime timeNow = DateTime.now();
-    List<Map> list = await dbClient.rawQuery('SELECT * FROM $tableTaskName '
-        'WHERE $columnTaskYear = ${timeNow.year} '
-        'AND $columnTaskMonth = ${timeNow.month} '
-        'AND $columnTaskDay = ${timeNow.day} '
-        );
+    List<Map> list = await dbClient.rawQuery(
+      'SELECT * FROM $tableTaskName '
+      'WHERE $columnTaskYear = ${timeNow.year} '
+      'AND $columnTaskMonth = ${timeNow.month} '
+      'AND $columnTaskDay = ${timeNow.day} '
+      'AND $columnTaskUserId = $userId',
+    );
     List<TaskModel> tasks = [];
     for (int i = 0; i < list.length; i++) {
-      if (list[i][columnTaskStart] <= timeNow.hour &&
-          timeNow.hour <= list[i][columnTaskEnd]) {
-        TaskModel data = TaskModel(
-          color: list[i][columnTaskColor],
-          userId: list[i][columnTaskUserId],
-          year: list[i][columnTaskYear],
-          month: list[i][columnTaskMonth],
-          day: list[i][columnTaskDay],
-          start: list[i][columnTaskStart],
-          end: list[i][columnTaskEnd],
-          title: list[i][columnTaskTitle],
-        );
-        tasks.add(data);
-        print(data.toJson());
-      }
+      TaskModel data = TaskModel(
+        color: list[i][columnTaskColor],
+        userId: list[i][columnTaskUserId],
+        year: list[i][columnTaskYear],
+        month: list[i][columnTaskMonth],
+        day: list[i][columnTaskDay],
+        start: list[i][columnTaskStart],
+        end: list[i][columnTaskEnd],
+        title: list[i][columnTaskTitle],
+      );
+      tasks.add(data);
     }
+    // print(list);
     return tasks;
   }
 

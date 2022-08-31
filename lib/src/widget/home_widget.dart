@@ -8,12 +8,18 @@ import 'package:parent_control/src/model/database/users_model.dart';
 import 'package:parent_control/src/utils/utils.dart';
 import 'package:parent_control/src/widget/home_task_widget.dart';
 import 'package:parent_control/src/widget/no_photo_widget.dart';
+import 'package:parent_control/src/widget/row_tasks_widget.dart';
 
 class HomeWidget extends StatelessWidget {
   final UsersModel userModel;
   final List<TaskModel> taskModel;
+  final int leftTasks;
 
-  const HomeWidget({Key? key, required this.userModel, required this.taskModel})
+  const HomeWidget(
+      {Key? key,
+      required this.userModel,
+      required this.taskModel,
+      required this.leftTasks})
       : super(key: key);
 
   @override
@@ -79,11 +85,35 @@ class HomeWidget extends StatelessWidget {
           SizedBox(
             height: 21 * h,
           ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16 * w),
+            child: Text(
+              'Current Task',
+              style: TextStyle(
+                fontFamily: AppColor.fontFamily,
+                fontWeight: FontWeight.w400,
+                fontSize: 12 * h,
+                height: 14 / 12,
+                color: AppColor.dark.withOpacity(0.6),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10 * h,
+          ),
           taskModel.isNotEmpty
               ? HomeTaskWidget(
                   data: taskModel.first,
                 )
-              : const SizedBox(),
+              : SizedBox(
+                  height: 26 * h,
+                ),
+          SizedBox(
+            height: 24 * h,
+          ),
+          RowTasksWidget(
+            leftTasks: leftTasks,
+          ),
         ],
       ),
     );

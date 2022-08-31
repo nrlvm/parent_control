@@ -21,10 +21,11 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isFirst = false;
   int currentPage = 0;
   List<TaskModel> taskModel = [];
+  int leftTasks = 0;
+
   @override
   initState() {
     usersBloc.allUser();
-    getTime();
     pageController.addListener(() {
       setState(() {
         currentPage = pageController.page!.toInt();
@@ -33,8 +34,13 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  getTime() async {
-    taskModel = await taskBloc.getTaskTime();
+  getTime(int userId) async {
+    taskModel = await taskBloc.getTaskTime(userId);
+  }
+
+  getLeftTasks(int userId) async {
+    leftTasks = await taskBloc.getLeftTask(userId);
+    setState(() {});
   }
 
   @override
@@ -49,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
             List<UsersModel> userData = snapshot.data!;
             if (!isFirst) {
               usersModel = userData[0];
+              getTime(usersModel.id);
               isFirst = true;
             }
             return Column(
@@ -78,11 +85,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     controller: pageController,
                     onPageChanged: (index) {
                       usersModel = userData[index];
+                      getTime(usersModel.id);
+                      getLeftTasks(usersModel.id);
                     },
                     itemBuilder: (context, index) {
                       return HomeWidget(
                         userModel: userData[index],
-                        taskModel: taskModel
+                        taskModel: taskModel,
+                        leftTasks: leftTasks,
                       );
                     },
                     itemCount: userData.length,

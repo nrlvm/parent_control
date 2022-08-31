@@ -320,7 +320,6 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                         widget.dateTime,
                       );
                       Navigator.pop(context);
-                      print(widget.data.toJson());
                     },
                     child: Container(
                       height: 56 * h,

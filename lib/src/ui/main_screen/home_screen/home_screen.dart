@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:parent_control/src/bloc/tasks_bloc.dart';
 import 'package:parent_control/src/bloc/users_bloc.dart';
 import 'package:parent_control/src/colors/app_color.dart';
-import 'package:parent_control/src/model/database/task_model.dart';
+import 'package:parent_control/src/model/data/home_model.dart';
 import 'package:parent_control/src/model/database/users_model.dart';
 import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/utils/utils.dart';
@@ -20,11 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController pageController = PageController();
   bool isFirst = false;
   int currentPage = 0;
-  List<TaskModel> taskModel = [];
-  int leftTasks = 0;
-  int leftWeekTasks = 0;
-  int allTasksToday = 0;
-  List<double> taskCount = [0,0,0,0,0,0,0];
 
   @override
   initState() {
@@ -35,27 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
     super.initState();
-  }
-
-  getTime(int userId) async {
-    taskModel = await taskBloc.getTaskTime(userId);
-  }
-
-  getAllTaskToday(int userId)async{
-    allTasksToday = await taskBloc.getTasksToday(userId);
-  }
-
-  getLeftTasks(int userId) async {
-    leftTasks = await taskBloc.getLeftTask(userId);
-    setState(() {});
-  }
-
-  getLeftWeekTasks(int userId) async {
-    leftWeekTasks = await taskBloc.getLeftWeekTask(userId);
-  }
-
-  getTaskCount(int userId)async{
-    taskCount = await taskBloc.getTaskChartCount(userId);
   }
 
   @override
@@ -70,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
             List<UsersModel> userData = snapshot.data!;
             if (!isFirst) {
               usersModel = userData[0];
-              getTime(usersModel.id);
+              usersBloc.allUserInfo(usersModel.id);
               isFirst = true;
             }
             return Column(
@@ -94,26 +67,30 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: 27 * h,
                 ),
-                SizedBox(
-                  height: 570 * h,
+                Expanded(
                   child: PageView.builder(
                     controller: pageController,
                     onPageChanged: (index) {
                       usersModel = userData[index];
-                      getTime(usersModel.id);
-                      getLeftTasks(usersModel.id);
-                      getLeftWeekTasks(usersModel.id);
-                      getAllTaskToday(usersModel.id);
-                      getTaskCount(usersModel.id);
+                      usersBloc.allUserInfo(usersModel.id);
                     },
                     itemBuilder: (context, index) {
-                      return HomeWidget(
-                        userModel: userData[index],
-                        taskModel: taskModel,
-                        leftTasks: leftTasks,
-                        leftWeekTasks: leftWeekTasks,
-                        allTasksToday: allTasksToday,
-                        taskCount: taskCount,
+                      return StreamBuilder<HomeModel>(
+                        stream: usersBloc.getUserInfo,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            HomeModel info = snapshot.data!;
+                            return HomeWidget(
+                              userModel: userData[index],
+                              taskModel: info.taskModel,
+                              leftTasks: info.leftTasks,
+                              leftWeekTasks: info.leftWeekTasks,
+                              allTasksToday: info.allTasksToday,
+                              taskCount: info.taskCount,
+                            );
+                          }
+                          return Container();
+                        },
                       );
                     },
                     itemCount: userData.length,
@@ -129,7 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     length: userData.length,
                   ),
                 ),
-
+                SizedBox(
+                  height: 32 * h,
+                ),
               ],
             );
           } else {

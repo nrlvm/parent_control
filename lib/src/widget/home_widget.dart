@@ -6,6 +6,7 @@ import 'package:parent_control/src/colors/app_color.dart';
 import 'package:parent_control/src/model/database/task_model.dart';
 import 'package:parent_control/src/model/database/users_model.dart';
 import 'package:parent_control/src/utils/utils.dart';
+import 'package:parent_control/src/widget/home_chart_widget.dart';
 import 'package:parent_control/src/widget/home_task_widget.dart';
 import 'package:parent_control/src/widget/no_photo_widget.dart';
 import 'package:parent_control/src/widget/row_tasks_widget.dart';
@@ -14,13 +15,19 @@ class HomeWidget extends StatelessWidget {
   final UsersModel userModel;
   final List<TaskModel> taskModel;
   final int leftTasks;
+  final int leftWeekTasks;
+  final int allTasksToday;
+  final List<double> taskCount;
 
-  const HomeWidget(
-      {Key? key,
-      required this.userModel,
-      required this.taskModel,
-      required this.leftTasks})
-      : super(key: key);
+  const HomeWidget({
+    Key? key,
+    required this.userModel,
+    required this.taskModel,
+    required this.leftTasks,
+    required this.leftWeekTasks,
+    required this.allTasksToday,
+    required this.taskCount,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +120,51 @@ class HomeWidget extends StatelessWidget {
           ),
           RowTasksWidget(
             leftTasks: leftTasks,
+            leftWeekTasks: leftWeekTasks,
+          ),
+          SizedBox(
+            height: 28 * h,
+          ),
+          Center(
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  fontFamily: AppColor.fontFamily,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16 * h,
+                  height: 19 / 16,
+                ),
+                children: [
+                  TextSpan(
+                    text: '${allTasksToday.toString()} activities ',
+                    style: TextStyle(
+                      color:
+                          allTasksToday != 0 ? AppColor.dBlue : AppColor.dark,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'for today',
+                    style: TextStyle(
+                      color: AppColor.dark,
+                    ),
+                  ),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: SvgPicture.asset(
+                      'assets/icons/arrow_right.svg',
+                      alignment: Alignment.center,
+                      color: AppColor.dBlue,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 12 * h,
+          ),
+          HomeChartWidget(
+            taskCount: taskCount,
           ),
         ],
       ),

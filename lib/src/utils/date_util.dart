@@ -30,4 +30,5 @@ class DateUtil {
     }
   }
 }
+
 final dateUtil = DateUtil();

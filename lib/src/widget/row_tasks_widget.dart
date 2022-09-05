@@ -4,10 +4,17 @@ import 'package:parent_control/src/utils/utils.dart';
 
 class RowTasksWidget extends StatelessWidget {
   final int leftTasks;
-  const RowTasksWidget({Key? key, required this.leftTasks}) : super(key: key);
+  final int leftWeekTasks;
+
+  const RowTasksWidget({
+    Key? key,
+    required this.leftTasks,
+    required this.leftWeekTasks,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    int alerts = 0;
     double h = Utils.height(context);
     double w = Utils.width(context);
     return Padding(
@@ -17,7 +24,7 @@ class RowTasksWidget extends StatelessWidget {
           Container(
             width: 94 * w,
             height: 72 * h,
-            padding: EdgeInsets.symmetric(horizontal: 5 * w,vertical: 5 * h),
+            padding: EdgeInsets.symmetric(horizontal: 5 * w, vertical: 5 * h),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               color: AppColor.dWhite,
@@ -57,7 +64,7 @@ class RowTasksWidget extends StatelessWidget {
           Container(
             width: 94 * w,
             height: 72 * h,
-            padding: EdgeInsets.symmetric(horizontal: 5 * w,vertical: 5 * h),
+            padding: EdgeInsets.symmetric(horizontal: 5 * w, vertical: 5 * h),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               color: AppColor.dWhite,
@@ -65,14 +72,14 @@ class RowTasksWidget extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  '3',
+                  alerts.toString(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: AppColor.fontFamily,
                     fontWeight: FontWeight.w500,
                     fontSize: 24 * h,
                     height: 28 / 24,
-                    color: AppColor.dBlue,
+                    color: alerts == 0 ? AppColor.dark : AppColor.orange,
                   ),
                 ),
                 SizedBox(
@@ -97,7 +104,7 @@ class RowTasksWidget extends StatelessWidget {
           Container(
             width: 94 * w,
             height: 72 * h,
-            padding: EdgeInsets.symmetric(horizontal: 5 * w,vertical: 5 * h),
+            padding: EdgeInsets.symmetric(horizontal: 5 * w, vertical: 5 * h),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               color: AppColor.dWhite,
@@ -105,14 +112,14 @@ class RowTasksWidget extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  '3',
+                  leftWeekTasks.toString(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: AppColor.fontFamily,
                     fontWeight: FontWeight.w500,
                     fontSize: 24 * h,
                     height: 28 / 24,
-                    color: AppColor.dBlue,
+                    color: AppColor.dark,
                   ),
                 ),
                 SizedBox(

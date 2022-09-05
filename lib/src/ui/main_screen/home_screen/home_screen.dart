@@ -22,6 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPage = 0;
   List<TaskModel> taskModel = [];
   int leftTasks = 0;
+  int leftWeekTasks = 0;
+  int allTasksToday = 0;
+  List<double> taskCount = [0,0,0,0,0,0,0];
 
   @override
   initState() {
@@ -38,9 +41,21 @@ class _HomeScreenState extends State<HomeScreen> {
     taskModel = await taskBloc.getTaskTime(userId);
   }
 
+  getAllTaskToday(int userId)async{
+    allTasksToday = await taskBloc.getTasksToday(userId);
+  }
+
   getLeftTasks(int userId) async {
     leftTasks = await taskBloc.getLeftTask(userId);
     setState(() {});
+  }
+
+  getLeftWeekTasks(int userId) async {
+    leftWeekTasks = await taskBloc.getLeftWeekTask(userId);
+  }
+
+  getTaskCount(int userId)async{
+    taskCount = await taskBloc.getTaskChartCount(userId);
   }
 
   @override
@@ -87,12 +102,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       usersModel = userData[index];
                       getTime(usersModel.id);
                       getLeftTasks(usersModel.id);
+                      getLeftWeekTasks(usersModel.id);
+                      getAllTaskToday(usersModel.id);
+                      getTaskCount(usersModel.id);
                     },
                     itemBuilder: (context, index) {
                       return HomeWidget(
                         userModel: userData[index],
                         taskModel: taskModel,
                         leftTasks: leftTasks,
+                        leftWeekTasks: leftWeekTasks,
+                        allTasksToday: allTasksToday,
+                        taskCount: taskCount,
                       );
                     },
                     itemCount: userData.length,
@@ -108,6 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     length: userData.length,
                   ),
                 ),
+
               ],
             );
           } else {

@@ -113,6 +113,35 @@ class DatabaseHelper {
     return tasks;
   }
 
+  /// get left until the end of the week
+
+  Future<List<TaskModel>> getLeftWeekTask(int userId, DateTime dateTime) async {
+    var dbClient = await db;
+
+    List<Map> list = await dbClient.rawQuery(
+      'SELECT * FROM $tableTaskName WHERE '
+      '$columnTaskUserId = $userId AND '
+      '$columnTaskYear = ${dateTime.year} AND '
+      '$columnTaskMonth = ${dateTime.month} AND '
+      '$columnTaskDay = ${dateTime.day}',
+    );
+    List<TaskModel> tasks = [];
+    for (int i = 0; i < list.length; i++) {
+      TaskModel data = TaskModel(
+        color: list[i][columnTaskColor],
+        userId: list[i][columnTaskUserId],
+        year: list[i][columnTaskYear],
+        month: list[i][columnTaskMonth],
+        day: list[i][columnTaskDay],
+        start: list[i][columnTaskStart],
+        end: list[i][columnTaskEnd],
+        title: list[i][columnTaskTitle],
+      );
+      tasks.add(data);
+    }
+    return tasks;
+  }
+
   ///get all task
 
   Future<List<TaskModel>> getTasks(int id, DateTime dateTime) async {

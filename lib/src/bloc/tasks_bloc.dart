@@ -29,9 +29,8 @@ class TasksBloc {
     List<TaskModel> list = await dbh.getTaskToday(userId);
     DateTime timeNow = DateTime.now();
     List<TaskModel> finalData = [];
-    for(int i = 0; i < list.length; i ++){
-      if (list[i].start <= timeNow.hour &&
-          timeNow.hour <= list[i].end) {
+    for (int i = 0; i < list.length; i++) {
+      if (list[i].start <= timeNow.hour && timeNow.hour <= list[i].end) {
         TaskModel data = TaskModel(
           color: list[i].color,
           userId: list[i].userId,
@@ -48,9 +47,7 @@ class TasksBloc {
     return finalData;
   }
 
-
-
-  Future<int> getLeftTask(int userId)async{
+  Future<int> getLeftTask(int userId) async {
     List<TaskModel> list = await dbh.getTaskToday(userId);
     DateTime timeNow = DateTime.now();
     int counter = 0;
@@ -62,6 +59,55 @@ class TasksBloc {
     return counter;
   }
 
+  Future<int> getTasksToday(int userId) async {
+    int counter = 0;
+    List<TaskModel> list = await dbh.getTaskToday(userId);
+    counter = list.length;
+    return counter;
+  }
+
+  Future<List<double>> getTaskChartCount(int userId) async {
+    List<double> taskCount = [];
+    DateTime firstDate = DateTime.now();
+    for (int i = 0; i < 7; i++) {
+      List<TaskModel> database = await dbh.getLeftWeekTask(
+        userId,
+        firstDate.add(
+          Duration(days: i),
+        ),
+      );
+      taskCount.add(database.length.toDouble());
+    }
+    return taskCount;
+  }
+
+  Future<int> getLeftWeekTask(int userId) async {
+    DateTime now = DateTime.now();
+    int counter = 0;
+    DateTime firstDate = getDate(now.subtract(Duration(days: now.weekday - 1)));
+    for (int i = 0; i < 7; i++) {
+      List<TaskModel> database = await dbh.getLeftWeekTask(
+        userId,
+        firstDate.add(
+          Duration(days: i),
+        ),
+      );
+      for (int j = 0; j < database.length; j++) {
+        DateTime dateTime = DateTime(
+          database[j].year,
+          database[j].month,
+          database[j].day,
+          database[j].end,
+        );
+        if (dateTime.isAfter(now)) {
+          counter++;
+        }
+      }
+    }
+    return counter;
+  }
+
+  DateTime getDate(DateTime d) => DateTime(d.year, d.month, d.day);
 }
 
 final taskBloc = TasksBloc();

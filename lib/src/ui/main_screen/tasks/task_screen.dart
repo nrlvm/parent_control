@@ -26,7 +26,7 @@ class _TaskScreenState extends State<TaskScreen> {
 
   @override
   void initState() {
-    taskBloc.allTask(usersModel.id, selectedDate);
+    taskBloc.allTask(usersModel!.id, selectedDate);
     super.initState();
   }
 
@@ -40,19 +40,19 @@ class _TaskScreenState extends State<TaskScreen> {
         backgroundColor: AppColor.blue,
         centerTitle: true,
         elevation: 0,
-        title: Text('Tasks ${usersModel.name}'),
+        title: Text('Tasks ${usersModel!.name}'),
         actions: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: usersModel.photo != ""
+            child: usersModel!.photo != ""
                 ? Image.file(
-                    File(usersModel.photo),
+                    File(usersModel!.photo),
                     height: 48 * h,
                     width: 48 * h,
                     fit: BoxFit.cover,
                   )
                 : NoPhoto(
-                    gender: usersModel.gender,
+                    gender: usersModel!.gender,
                     main: false,
                   ),
           ),
@@ -85,7 +85,7 @@ class _TaskScreenState extends State<TaskScreen> {
                     change: (int index) {
                       selectedIndex = index;
                       selectedDate = DateTime.now().add(Duration(days: index));
-                      taskBloc.allTask(usersModel.id, selectedDate);
+                      taskBloc.allTask(usersModel!.id, selectedDate);
                       setState(() {});
                     },
                   ),

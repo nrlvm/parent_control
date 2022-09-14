@@ -45,6 +45,7 @@ flutter:
     - assets/onboard/
     - assets/icons/
     - assets/main_icons/
+    - assets/service_icons/
   fonts:
     - family: SFProDisplay
       fonts:

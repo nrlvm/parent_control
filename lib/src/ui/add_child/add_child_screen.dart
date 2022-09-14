@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:parent_control/src/bloc/users_bloc.dart';
 import 'package:parent_control/src/colors/app_color.dart';
-import 'package:parent_control/src/model/database/users_model.dart';
-import 'package:parent_control/src/ui/main_screen/main_screen.dart';
+import 'package:parent_control/src/ui/add_child/add_services.dart';
 import 'package:parent_control/src/utils/utils.dart';
 
 class AddChildScreen extends StatefulWidget {
@@ -21,19 +19,34 @@ class _AddChildScreenState extends State<AddChildScreen> {
   final TextEditingController _controller = TextEditingController();
   String selectedGender = '';
 
+  // Color k = AppColor.grey;
+  bool ready = false;
+
+  @override
+  void initState() {
+    _controller.addListener(() {
+      if (_controller.text.isNotEmpty && selectedGender != '') {
+        ready = true;
+        setState(() {});
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    Color k;
-    if (selectedGender != '' && _controller.text.isNotEmpty) {
-      k = AppColor.blue;
-    } else {
-      k = AppColor.grey;
-    }
+    // Color k;
+    // if (selectedGender != '' && _controller.text.isNotEmpty) {
+    //   k = AppColor.blue;
+    // } else {
+    //   k = AppColor.grey;
+    // }
     double h = Utils.height(context);
     double w = Utils.width(context);
     return Scaffold(
       backgroundColor: AppColor.blue,
       body: ListView(
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           SizedBox(
             height: 20 * h,
@@ -96,6 +109,11 @@ class _AddChildScreenState extends State<AddChildScreen> {
                     GestureDetector(
                       onTap: () {
                         selectedGender = 'boy';
+                        if (_controller.text.isNotEmpty) {
+                          ready = true;
+                        } else {
+                          ready = false;
+                        }
                         setState(() {});
                       },
                       child: Column(
@@ -136,6 +154,11 @@ class _AddChildScreenState extends State<AddChildScreen> {
                     GestureDetector(
                       onTap: () {
                         selectedGender = 'girl';
+                        if (_controller.text.isNotEmpty) {
+                          ready = true;
+                        } else {
+                          ready = false;
+                        }
                         setState(() {});
                       },
                       child: Column(
@@ -188,6 +211,15 @@ class _AddChildScreenState extends State<AddChildScreen> {
                   child: Center(
                     child: TextField(
                       controller: _controller,
+                      // onEditingComplete: () {
+                      //   if (_controller.text.isNotEmpty &&
+                      //       selectedGender != '') {
+                      //     ready = true;
+                      //   } else {
+                      //     ready = false;
+                      //   }
+                      //   setState(() {});
+                      // },
                       autocorrect: false,
                       style: TextStyle(
                         fontFamily: AppColor.fontFamily,
@@ -214,28 +246,43 @@ class _AddChildScreenState extends State<AddChildScreen> {
                   height: 152 * h,
                 ),
                 GestureDetector(
-                  onTap: () {
-                    usersBloc.allSaveUser(
-                      UsersModel(
-                        name: _controller.text,
-                        gender: selectedGender,
-                        photo: image == null ? "" : image!.path,
-                      ),
-                    );
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MainScreen(),
-                      ),
-                    );
+                  onTap: () async {
+                    // int userId = await usersBloc.allSaveUser(
+                    //   UsersModel(
+                    //     name: _controller.text,
+                    //     gender: selectedGender,
+                    //     photo: image == null ? "" : image!.path,
+                    //   ),
+                    // );
+                    // Navigator.pushReplacement(
+                    //   this.context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const MainScreen(),
+                    //   ),
+                    // );
+                    if (ready) {
+                      setState(() {});
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddServicesScreen(
+                            name: _controller.text,
+                            photo: image == null ? '' : image!.path,
+                            selectedGender: selectedGender,
+                          ),
+                        ),
+                      );
+                    }
                   },
-                  child: Container(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 370),
+                    curve: Curves.easeInOut,
                     width: MediaQuery.of(context).size.width,
                     height: 56 * h,
                     margin: EdgeInsets.symmetric(horizontal: 40 * w),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(32),
-                      color: k,
+                      color: ready ? AppColor.blue : AppColor.grey,
                     ),
                     child: Center(
                       child: Text(
@@ -245,7 +292,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                           fontWeight: FontWeight.w500,
                           fontSize: 18 * h,
                           height: 21 / 18,
-                          color: k == AppColor.grey
+                          color: !ready
                               ? AppColor.dark.withOpacity(0.3)
                               : AppColor.white,
                         ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:parent_control/src/colors/app_color.dart';
 import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/utils/utils.dart';
+import 'package:parent_control/src/widget/alert_widget.dart';
 import 'package:parent_control/src/widget/no_photo_widget.dart';
 
 class AlertScreen extends StatefulWidget {
@@ -24,19 +25,19 @@ class _AlertScreenState extends State<AlertScreen> {
         backgroundColor: AppColor.blue,
         centerTitle: true,
         elevation: 0,
-        title: Text('Alerts ${usersModel.name}'),
+        title: Text('Alerts ${usersModel!.name}'),
         actions: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: usersModel.photo != ""
+            child: usersModel!.photo != ""
                 ? Image.file(
-                    File(usersModel.photo),
+                    File(usersModel!.photo),
                     height: 48 * h,
                     width: 48 * h,
                     fit: BoxFit.cover,
                   )
                 : NoPhoto(
-                    gender: usersModel.gender,
+                    gender: usersModel!.gender,
                     main: false,
                   ),
           ),
@@ -74,6 +75,14 @@ class _AlertScreenState extends State<AlertScreen> {
               ),
             ),
           ),
+          SizedBox(
+            height: 16 * h,
+          ),
+          ListView.builder(
+            itemBuilder: (context, index) {
+              return Container();
+            },
+          )
         ],
       ),
     );

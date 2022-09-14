@@ -54,19 +54,19 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         backgroundColor: AppColor.blue,
         centerTitle: true,
         elevation: 0,
-        title: Text('Tasks ${usersModel.name}'),
+        title: Text('Tasks ${usersModel!.name}'),
         actions: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: usersModel.photo != ""
+            child: usersModel!.photo != ""
                 ? Image.file(
-                    File(usersModel.photo),
+                    File(usersModel!.photo),
                     height: 48 * h,
                     width: 48 * h,
                     fit: BoxFit.cover,
                   )
                 : NoPhoto(
-                    gender: usersModel.gender,
+                    gender: usersModel!.gender,
                     main: false,
                   ),
           ),
@@ -311,7 +311,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       taskBloc.saveTask(
                         TaskModel(
                           color: selectedIndex,
-                          userId: usersModel.id,
+                          userId: usersModel!.id,
                           year: widget.dateTime.year,
                           month: widget.dateTime.month,
                           day: widget.dateTime.day,

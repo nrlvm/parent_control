@@ -8,7 +8,7 @@ import 'package:parent_control/src/ui/main_screen/setting/setting_screen.dart';
 import 'package:parent_control/src/ui/main_screen/tasks/task_screen.dart';
 import 'package:parent_control/src/utils/utils.dart';
 
-late UsersModel usersModel;
+UsersModel? usersModel;
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);

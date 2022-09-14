@@ -15,6 +15,7 @@ class HomeChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     double h = Utils.height(context);
     double w = Utils.width(context);
+    // ignore: unused_local_variable
     final List<Color> gradient = [
       Colors.red,
       Colors.orange,
@@ -49,7 +50,7 @@ class HomeChartWidget extends StatelessWidget {
             LineChartBarData(
               // dashArray: [20, 20],
               // isCurved: true,
-              spots:  [
+              spots: [
                 FlSpot(0, taskCount[0]),
                 FlSpot(1, taskCount[1]),
                 FlSpot(2, taskCount[2]),

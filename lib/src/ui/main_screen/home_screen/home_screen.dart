@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
             List<UsersModel> userData = snapshot.data!;
             if (!isFirst) {
               usersModel = userData[0];
-              usersBloc.allUserInfo(usersModel.id);
+              usersBloc.allUserInfo(usersModel!.id);
               isFirst = true;
             }
             return Column(
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     controller: pageController,
                     onPageChanged: (index) {
                       usersModel = userData[index];
-                      usersBloc.allUserInfo(usersModel.id);
+                      usersBloc.allUserInfo(usersModel!.id);
                     },
                     itemBuilder: (context, index) {
                       return StreamBuilder<HomeModel>(

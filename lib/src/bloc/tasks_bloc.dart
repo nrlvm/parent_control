@@ -17,12 +17,12 @@ class TasksBloc {
 
   saveTask(TaskModel data, DateTime dateTime) async {
     await dbh.saveTask(data);
-    allTask(usersModel.id, dateTime);
+    allTask(usersModel!.id, dateTime);
   }
 
   updateTask(TaskModel data, DateTime dateTime) async {
     await dbh.updateTask(data);
-    allTask(usersModel.id, dateTime);
+    allTask(usersModel!.id, dateTime);
   }
 
   Future<List<TaskModel>> getTaskTime(int userId) async {

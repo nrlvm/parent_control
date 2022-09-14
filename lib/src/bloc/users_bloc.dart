@@ -45,9 +45,10 @@ class UsersBloc {
     }
   }
 
-  allSaveUser(UsersModel data) async {
-    await dbh.saveUser(data);
+  Future<int> allSaveUser(UsersModel data) async {
+    int userId = await dbh.saveUser(data);
     allUser();
+    return userId;
   }
 
   allUpdateUser(UsersModel data) async {

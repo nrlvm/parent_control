@@ -1,5 +1,6 @@
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
+import 'package:parent_control/src/model/data/service_database.dart';
 import 'package:parent_control/src/model/database/task_model.dart';
 import 'dart:async';
 import 'package:parent_control/src/model/database/users_model.dart';
@@ -26,6 +27,12 @@ class DatabaseHelper {
   final String columnTaskColor = 'color';
   final String columnTaskTitle = 'title';
   final String columnTaskUserId = 'user_id';
+
+  final String tableServiceName = 'serviceTable';
+  final String columnServiceId = 'service_id';
+  final String columnServiceType = 'type';
+  final String columnServiceUserId = 'user_id';
+  final String columnServiceStatus = 'status';
 
   static Database? _db;
 
@@ -67,12 +74,26 @@ class DatabaseHelper {
       '$columnTaskTitle TEXT, '
       '$columnTaskUserId INTEGER)',
     );
+    await db.execute(
+      'CREATE TABLE $tableServiceName('
+      '$columnServiceId INTEGER PRIMARY KEY AUTOINCREMENT, '
+      '$columnServiceType INTEGER, '
+      '$columnServiceUserId INTEGER, '
+      '$columnServiceStatus INTEGER)',
+    );
   }
 
   /// save task
-  saveTask(TaskModel data) async {
+  Future<int> saveTask(TaskModel data) async {
     var dbClient = await db;
     var result = await dbClient.insert('taskTable', data.toJson());
+    return result;
+  }
+
+  ///save service
+  Future<int> saveServices(ServiceModelData data) async {
+    var dbClient = await db;
+    var result = await dbClient.insert(tableServiceName, data.toJson());
     return result;
   }
 
@@ -140,6 +161,24 @@ class DatabaseHelper {
       tasks.add(data);
     }
     return tasks;
+  }
+
+  ///get all services
+  Future<List<ServiceModelData>> getServices(int id) async {
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery(
+      'SELECT * FROM $tableServiceName WHERE $columnServiceUserId = $id',
+    );
+    List<ServiceModelData> services = [];
+    for (int i = 0; i < list.length; i++) {
+      ServiceModelData data = ServiceModelData(
+        type: list[i][columnServiceType],
+        userId: list[i][columnServiceUserId],
+        status: list[i][columnServiceStatus],
+      );
+      services.add(data);
+    }
+    return services;
   }
 
   ///get all task

@@ -111,7 +111,7 @@ class _AddServicesScreenState extends State<AddServicesScreen> {
                 ),
               );
               for (int i = 0; i < res.length; i++) {
-                await serviceBloc.allSaveServices(res[i]);
+                await serviceBloc.saveServices(res[i]);
                 // print(res[i].toJson());
               }
               Navigator.pushAndRemoveUntil(

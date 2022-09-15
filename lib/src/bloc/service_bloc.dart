@@ -9,9 +9,16 @@ class ServiceBloc {
 
   Stream<List<ServiceModelData>> get getServices => _fetchServices.stream;
 
-  Future<int> allSaveServices(ServiceModelData data) async {
+  Future<int> saveServices(ServiceModelData data) async {
+    _fetchServices.sink.add(data);
     int userId = await dbh.saveServices(data);
     return userId;
+  }
+
+  Future<List<ServiceModelData>> showServices(int userId) async {
+    List<ServiceModelData> data = await dbh.getServices(userId);
+    _fetchServices.sink.add(data);
+    return data;
   }
 }
 

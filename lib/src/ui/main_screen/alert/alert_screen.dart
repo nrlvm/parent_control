@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:parent_control/src/bloc/service_bloc.dart';
 import 'package:parent_control/src/colors/app_color.dart';
+import 'package:parent_control/src/model/data/service_database.dart';
 import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/utils/utils.dart';
 import 'package:parent_control/src/widget/alert_widget.dart';
@@ -15,6 +17,19 @@ class AlertScreen extends StatefulWidget {
 }
 
 class _AlertScreenState extends State<AlertScreen> {
+  List<ServiceModelData> data = [];
+
+  @override
+  void initState() {
+    getServices(usersModel!.id);
+    super.initState();
+  }
+
+  getServices(int userId) async {
+    data = await serviceBloc.showServices(userId);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     double h = Utils.height(context);
@@ -78,11 +93,25 @@ class _AlertScreenState extends State<AlertScreen> {
           SizedBox(
             height: 16 * h,
           ),
-          ListView.builder(
-            itemBuilder: (context, index) {
-              return Container();
+          StreamBuilder<List<ServiceModelData>>(
+            stream: serviceBloc.getServices,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<ServiceModelData> data = snapshot.data!;
+                return ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return AlertWidget(
+                      data: data[index],
+                    );
+                  },
+                );
+              } else {
+                print(usersModel!.id);
+                return Container();
+              }
             },
-          )
+          ),
         ],
       ),
     );

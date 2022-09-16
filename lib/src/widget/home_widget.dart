@@ -158,6 +158,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                           : AppColor.dark,
                     ),
                   ),
+
                   TextSpan(
                     text: 'for today',
                     style: TextStyle(

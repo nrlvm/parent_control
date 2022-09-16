@@ -8,6 +8,7 @@ import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/utils/utils.dart';
 import 'package:parent_control/src/widget/alert_widget.dart';
 import 'package:parent_control/src/widget/no_photo_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AlertScreen extends StatefulWidget {
   const AlertScreen({Key? key}) : super(key: key);
@@ -25,10 +26,16 @@ class _AlertScreenState extends State<AlertScreen> {
     super.initState();
   }
 
-  getServices(int userId) async {
+  int selectedIndex = -1;
+
+  Future<List<ServiceModelData>> getServices(int userId) async {
     data = await serviceBloc.showServices(userId);
     setState(() {});
+    return data;
   }
+
+  int dislikeCounter = 0;
+  int likeCounter = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -93,24 +100,61 @@ class _AlertScreenState extends State<AlertScreen> {
           SizedBox(
             height: 16 * h,
           ),
-          StreamBuilder<List<ServiceModelData>>(
-            stream: serviceBloc.getServices,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<ServiceModelData> data = snapshot.data!;
-                return ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return AlertWidget(
-                      data: data[index],
-                    );
-                  },
-                );
-              } else {
-                print(usersModel!.id);
-                return Container();
-              }
-            },
+          Expanded(
+            child: StreamBuilder<List<ServiceModelData>>(
+              stream: serviceBloc.getServices,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<ServiceModelData> data = snapshot.data!;
+                  return ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return AlertWidget(
+                        data: data[index],
+                        dislike: () async {
+                          data[index].disliked = !data[index].disliked;
+                          dislikeCounter = 0;
+                          for (int i = 0; i < data.length; i++) {
+                            if (data[i].disliked) {
+                              dislikeCounter += 1;
+                            }
+                          }
+                          print('dislike $dislikeCounter');
+                          print('userId ${usersModel!.id}');
+
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          prefs.setInt(
+                              '${usersModel!.id} DISLIKES', dislikeCounter);
+                          setState(() {});
+                        },
+                        like: () async {
+                          data[index].liked = !data[index].liked;
+                          likeCounter = 0;
+                          for (int i = 0; i < data.length; i++) {
+                            if (data[i].liked) {
+                              likeCounter += 1;
+                            }
+                          }
+                          print(' likes $likeCounter');
+                          print('userId ${usersModel!.id}');
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          prefs.setInt('${usersModel!.id} LIKES', likeCounter);
+                          setState(() {});
+                        },
+
+                        // data: getServices(usersModel!.id),
+                      );
+                    },
+                    itemCount: data.length,
+                  );
+                } else {
+                  // print(' data alert screen ${snapshot.data}');
+                  return Container();
+                }
+              },
+            ),
           ),
         ],
       ),

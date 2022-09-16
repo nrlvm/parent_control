@@ -8,10 +8,14 @@ import 'package:parent_control/src/utils/utils.dart';
 
 class AlertWidget extends StatelessWidget {
   final ServiceModelData data;
+  final Function() like;
+  final Function() dislike;
 
   const AlertWidget({
     Key? key,
     required this.data,
+    required this.like,
+    required this.dislike,
   }) : super(key: key);
 
   @override
@@ -33,7 +37,14 @@ class AlertWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Image.asset('assets/service_icons/${model.asset}.png'),
+          SizedBox(
+            height: 24 * h,
+            width: 24 * h,
+            child: Image.asset(
+              'assets/service_icons/${model.asset}.png',
+              fit: BoxFit.contain,
+            ),
+          ),
           SizedBox(
             width: 24 * w,
           ),
@@ -48,11 +59,27 @@ class AlertWidget extends StatelessWidget {
               ),
             ),
           ),
-          SvgPicture.asset('assets/icons/dislike.svg'),
+          GestureDetector(
+            onTap: () {
+              dislike();
+            },
+            child: SvgPicture.asset(
+              'assets/icons/dislike.svg',
+              color: !data.disliked ? AppColor.grey : AppColor.orange,
+            ),
+          ),
           SizedBox(
             width: 16 * w,
           ),
-          SvgPicture.asset('assets/icons/like.svg'),
+          GestureDetector(
+            onTap: () {
+              like();
+            },
+            child: SvgPicture.asset(
+              'assets/icons/like.svg',
+              color: !data.liked ? AppColor.grey : AppColor.blue,
+            ),
+          ),
         ],
       ),
     );

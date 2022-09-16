@@ -5,13 +5,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:parent_control/src/colors/app_color.dart';
 import 'package:parent_control/src/model/database/task_model.dart';
 import 'package:parent_control/src/model/database/users_model.dart';
+import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/utils/utils.dart';
 import 'package:parent_control/src/widget/home_chart_widget.dart';
 import 'package:parent_control/src/widget/home_task_widget.dart';
 import 'package:parent_control/src/widget/no_photo_widget.dart';
 import 'package:parent_control/src/widget/row_tasks_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HomeWidget extends StatelessWidget {
+class HomeWidget extends StatefulWidget {
   final UsersModel userModel;
   final List<TaskModel> taskModel;
   final int leftTasks;
@@ -28,6 +30,19 @@ class HomeWidget extends StatelessWidget {
     required this.allTasksToday,
     required this.taskCount,
   }) : super(key: key);
+
+  @override
+  State<HomeWidget> createState() => _HomeWidgetState();
+}
+
+class _HomeWidgetState extends State<HomeWidget> {
+  int alertCounter = 0;
+
+  @override
+  void initState() {
+    getAlerts(widget.userModel.id);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +64,13 @@ class HomeWidget extends StatelessWidget {
             width: 343 * w,
             child: Stack(
               children: [
-                userModel.photo == ""
+                widget.userModel.photo == ""
                     ? NoPhoto(
-                        gender: userModel.gender,
+                        gender: widget.userModel.gender,
                         main: true,
                       )
                     : Image.file(
-                        File(userModel.photo),
+                        File(widget.userModel.photo),
                         width: 343 * w,
                         height: 160 * h,
                         fit: BoxFit.cover,
@@ -69,7 +84,7 @@ class HomeWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        userModel.name,
+                        widget.userModel.name,
                         style: TextStyle(
                           fontFamily: AppColor.fontFamily,
                           fontWeight: FontWeight.w600,
@@ -108,9 +123,9 @@ class HomeWidget extends StatelessWidget {
           SizedBox(
             height: 10 * h,
           ),
-          taskModel.isNotEmpty
+          widget.taskModel.isNotEmpty
               ? HomeTaskWidget(
-                  data: taskModel.first,
+                  data: widget.taskModel.first,
                 )
               : SizedBox(
                   height: 26 * h,
@@ -119,11 +134,11 @@ class HomeWidget extends StatelessWidget {
             height: 24 * h,
           ),
           RowTasksWidget(
-            leftTasks: leftTasks,
-            leftWeekTasks: leftWeekTasks,
+            leftTasks: widget.leftTasks,
+            leftWeekTasks: widget.leftWeekTasks,
           ),
           SizedBox(
-            height: 28 * h,
+            height: 16 * h,
           ),
           Center(
             child: RichText(
@@ -136,10 +151,11 @@ class HomeWidget extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: '${allTasksToday.toString()} activities ',
+                    text: '${widget.allTasksToday.toString()} activities ',
                     style: TextStyle(
-                      color:
-                          allTasksToday != 0 ? AppColor.dBlue : AppColor.dark,
+                      color: widget.allTasksToday != 0
+                          ? AppColor.dBlue
+                          : AppColor.dark,
                     ),
                   ),
                   TextSpan(
@@ -160,14 +176,43 @@ class HomeWidget extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
-            height: 12 * h,
-          ),
           HomeChartWidget(
-            taskCount: taskCount,
+            taskCount: widget.taskCount,
           ),
+          SizedBox(
+            height: 16 * h,
+          ),
+          Container(
+            height: 56 * h,
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(horizontal: 40 * w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(32 * h),
+              color: alertCounter > 0.3 ? AppColor.orange : AppColor.dBlue,
+            ),
+            child: Center(
+              child: Text(
+                '$alertCounter alerts need review',
+                style: TextStyle(
+                  fontFamily: AppColor.fontFamily,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18 * h,
+                  color: AppColor.white,
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
+  }
+
+  getAlerts(int userId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // int likeCount = prefs.getInt('$userId LIKES') ?? 0;
+    int dislikeCount = prefs.getInt('$userId DISLIKES') ?? 0;
+    alertCounter = dislikeCount;
+    setState(() {});
+    return alertCounter;
   }
 }

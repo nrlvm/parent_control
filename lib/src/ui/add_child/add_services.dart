@@ -110,10 +110,10 @@ class _AddServicesScreenState extends State<AddServicesScreen> {
                   photo: widget.photo,
                 ),
               );
-              for (int i = 0; i < res.length; i++) {
-                await serviceBloc.saveServices(res[i]);
-                // print(res[i].toJson());
-              }
+              // for (int i = 0; i < res.length; i++) {
+              await serviceBloc.saveServices(res);
+              // print(res[i].toJson());
+              // }
               Navigator.pushAndRemoveUntil(
                   this.context,
                   MaterialPageRoute(builder: (context) => const MainScreen()),

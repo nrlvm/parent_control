@@ -9,9 +9,15 @@ class ServiceBloc {
 
   Stream<List<ServiceModelData>> get getServices => _fetchServices.stream;
 
-  Future<int> saveServices(ServiceModelData data) async {
+  Future<int> saveServices(List<ServiceModelData> data) async {
     _fetchServices.sink.add(data);
-    int userId = await dbh.saveServices(data);
+    int userId = 0;
+    // print('len ${data.length}');
+    // userId = await dbh.saveServices(data[0]);
+    for (int i = 0; i < data.length; i++) {
+      userId = await dbh.saveServices(data[i]);
+    }
+    // showServices(userId);
     return userId;
   }
 

@@ -7,6 +7,7 @@ import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/utils/utils.dart';
 import 'package:parent_control/src/widget/circle_widget.dart';
 import 'package:parent_control/src/widget/home_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController pageController = PageController();
   bool isFirst = false;
   int currentPage = 0;
+  int alertCounter = 0;
 
   @override
   initState() {
@@ -79,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         stream: usersBloc.getUserInfo,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
+                            // print(alertCounter);
                             HomeModel info = snapshot.data!;
                             return HomeWidget(
                               userModel: userData[index],

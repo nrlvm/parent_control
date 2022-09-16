@@ -1,5 +1,6 @@
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
+import 'package:parent_control/src/ui/main_screen/main_screen.dart';
 import 'package:parent_control/src/model/data/service_database.dart';
 import 'package:parent_control/src/model/database/task_model.dart';
 import 'dart:async';
@@ -167,7 +168,8 @@ class DatabaseHelper {
   Future<List<ServiceModelData>> getServices(int id) async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery(
-      'SELECT * FROM $tableServiceName WHERE $columnServiceUserId = $id',
+      'SELECT * FROM $tableServiceName '
+      'WHERE $columnServiceUserId = ${usersModel!.id - 1}',
     );
     List<ServiceModelData> services = [];
     for (int i = 0; i < list.length; i++) {

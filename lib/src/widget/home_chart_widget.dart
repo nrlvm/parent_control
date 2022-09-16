@@ -62,7 +62,7 @@ class HomeChartWidget extends StatelessWidget {
               color: AppColor.dark,
               // gradient: LinearGradient(colors: gradient),
               barWidth: 1,
-              // belowBarData: BarAreaData(
+              // aboveBarData: BarAreaData(
               //   show: true,
               //   gradient: LinearGradient(
               //       colors: gradient
